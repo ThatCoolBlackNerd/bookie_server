@@ -2,27 +2,27 @@ const express = require('express');
 const service = require('../db/bookie_service');
 const router = express.Router();
 const auth = require('../middleware/auth');
+const validate = require('../middleware/validate');
 
-router.post('/', auth, (req, res, next) => {
+router.post('/', auth, async (req, res) => {
     let wager = req.body;
 
-    if(wager) {
-        service.placeWager(wager).then(wager => {
-            res.json(wager[0])
-        })
-        .catch(next)
-    } else {
-        res.status(404).send('wager not placed')
-    }   
+    // validate the wager info from client
+    const { error } = validate.validateWager(wager);
+    if (error) return res.status(400).send(error.details[0].message);
+
+    let wager = await service.placeWager(wager);
+
+    res.send(wager[0]);
 });
 
-router.get('/:id', auth,  (req, res, next) => {
+router.get('/:id', auth, async (req, res) => {
     let id = req.params.id
 
-    service.getUserWager(id).then(wager => {
-       res.json(wager)
-    })
-    .catch(next)
+    let wager = await service.getUserWager(id);
+    if(!wager) return res.status(401).send('Invalid Wager');
+
+    res.send(wager);
 });
 
 module.exports = router; 

@@ -3,8 +3,8 @@ const bcrypt = require('bcrypt');
 
 module.exports= {
 
-    getUsers(req, res) {
-        return knex('users').then(users => res.send(users));
+    getUsers() {
+        return knex('users');
     },
 
     getWagers() {
@@ -44,7 +44,7 @@ module.exports= {
     },
 
     findUser(email) {
-        return knex('users').where({ email: email}).first();
+        return knex('users').where({ email: email }).first();
     },
 
     completedBet(id) {

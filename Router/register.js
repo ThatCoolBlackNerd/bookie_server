@@ -4,6 +4,7 @@ const router = express.Router();
 const validate = require('../middleware/validate');
 const config = require('config');
 const _ = require('lodash');
+const jwt = require('jsonwebtoken');
 
 router.post('/', async (req, res) => {
     // Destructuring the request body

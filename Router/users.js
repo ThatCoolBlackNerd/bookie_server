@@ -2,18 +2,19 @@ const express = require('express');
 const service = require('../db/bookie_service');
 const router = express.Router();
 
-router.get('/', service.getUsers);
+router.get('/', (req, res) => {
+    let users = await service.getUsers();
 
-router.get('/:userId', (req, res, next) => {
+    res.send(users)
+})
+
+router.get('/:userId', async (req, res) => {
     let id = req.params.userId
 
-    service.getUserById(id).then(user => {
-        if (!user) {
-            return res.status(404).send('User does not exist')
-        }
-        res.json(user)
-    })
-    .catch(next)
+    let user = await service.getUserById(id);
+    if(!user) return res.status(401).send('Invalid User');
+
+    res.send(user);
 });
 
 module.exports = router; 

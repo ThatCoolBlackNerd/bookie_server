@@ -6,12 +6,8 @@ const bcrypt = require('bcrypt');
 const config = require('config');
 const jwt = require('jsonwebtoken');
 
-router.post('/', async (req, res, next) => {
+router.post('/', async (req, res) => {
     let { email, password } = req.body;
-
-    // Validates the login information from the client
-    const { error } = validate.validateUser(req.body)
-    if (error) return res.status(400).send(error.details[0].message);
 
     // Make request to database with client provided user information
     let user = await service.findUser(email);
